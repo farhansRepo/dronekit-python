@@ -1,4 +1,8 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
 """
+© Copyright 2015-2016, 3D Robotics.
 simple_goto.py: GUIDED mode "simple goto" example (Copter Only)
 
 Demonstrates how to arm and takeoff in Copter and how to navigate to points using Vehicle.simple_goto.
@@ -12,15 +16,25 @@ import time
 
 #Set up option parsing to get connection string
 import argparse  
-parser = argparse.ArgumentParser(description='Print out vehicle state information. Connects to SITL on local PC by default.')
-parser.add_argument('--connect', default='127.0.0.1:14550',
-                   help="vehicle connection target. Default '127.0.0.1:14550'")
+parser = argparse.ArgumentParser(description='Commands vehicle using vehicle.simple_goto.')
+parser.add_argument('--connect', 
+                   help="Vehicle connection target string. If not specified, SITL automatically started and used.")
 args = parser.parse_args()
+
+connection_string = args.connect
+sitl = None
+
+
+#Start SITL if no connection string specified
+if not connection_string:
+    import dronekit_sitl
+    sitl = dronekit_sitl.start_default()
+    connection_string = sitl.connection_string()
 
 
 # Connect to the Vehicle
-print 'Connecting to vehicle on: %s' % args.connect
-vehicle = connect(args.connect, wait_ready=True)
+print 'Connecting to vehicle on: %s' % connection_string
+vehicle = connect(connection_string, wait_ready=True)
 
 
 def arm_and_takeoff(aTargetAltitude):
@@ -37,8 +51,8 @@ def arm_and_takeoff(aTargetAltitude):
         
     print "Arming motors"
     # Copter should arm in GUIDED mode
-    vehicle.mode    = VehicleMode("GUIDED")
-    vehicle.armed   = True    
+    vehicle.mode = VehicleMode("GUIDED")
+    vehicle.armed = True    
 
     # Confirm vehicle armed before attempting to take off
     while not vehicle.armed:      
@@ -61,7 +75,7 @@ def arm_and_takeoff(aTargetAltitude):
 arm_and_takeoff(10)
 
 print "Set default/target airspeed to 3"
-vehicle.airspeed=3
+vehicle.airspeed = 3
 
 print "Going towards first point for 30 seconds ..."
 point1 = LocationGlobalRelative(-35.361354, 149.165218, 20)
@@ -78,8 +92,12 @@ vehicle.simple_goto(point2, groundspeed=10)
 time.sleep(30)
 
 print "Returning to Launch"
-vehicle.mode    = VehicleMode("RTL")
+vehicle.mode = VehicleMode("RTL")
 
 #Close vehicle object before exiting script
 print "Close vehicle object"
 vehicle.close()
+
+# Shut down simulator if it was started.
+if sitl is not None:
+    sitl.stop()

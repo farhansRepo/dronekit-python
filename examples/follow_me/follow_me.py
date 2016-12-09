@@ -1,4 +1,8 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
 """
+© Copyright 2015-2016, 3D Robotics.
 followme - Tracks GPS position of your computer (Linux only).
 
 This example uses the python gps package to read positions from a GPS attached to your 
@@ -18,15 +22,24 @@ import sys
 
 #Set up option parsing to get connection string
 import argparse  
-parser = argparse.ArgumentParser(description='Tracks GPS position of your computer (Linux only). Connects to SITL on local PC by default.')
-parser.add_argument('--connect', default='127.0.0.1:14550',
-                   help="vehicle connection target. Default '127.0.0.1:14550'")
+parser = argparse.ArgumentParser(description='Tracks GPS position of your computer (Linux only).')
+parser.add_argument('--connect', 
+                   help="vehicle connection target string. If not specified, SITL automatically started and used.")
 args = parser.parse_args()
 
+connection_string = args.connect
+sitl = None
+
+
+#Start SITL if no connection string specified
+if not connection_string:
+    import dronekit_sitl
+    sitl = dronekit_sitl.start_default()
+    connection_string = sitl.connection_string()
 
 # Connect to the Vehicle
-print 'Connecting to vehicle on: %s' % args.connect
-vehicle = connect(args.connect, wait_ready=True)
+print 'Connecting to vehicle on: %s' % connection_string
+vehicle = connect(connection_string, wait_ready=True)
 
 
 
@@ -44,8 +57,8 @@ def arm_and_takeoff(aTargetAltitude):
         
     print "Arming motors"
     # Copter should arm in GUIDED mode
-    vehicle.mode    = VehicleMode("GUIDED")
-    vehicle.armed   = True    
+    vehicle.mode = VehicleMode("GUIDED")
+    vehicle.armed = True    
 
     while not vehicle.armed:      
         print " Waiting for arming..."
@@ -101,5 +114,9 @@ except socket.error:
 #Close vehicle object before exiting script
 print "Close vehicle object"
 vehicle.close()
+
+# Shut down simulator if it was started.
+if sitl is not None:
+    sitl.stop()
 
 print("Completed")

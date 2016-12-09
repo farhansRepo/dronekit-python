@@ -1,7 +1,12 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
 """
+© Copyright 2015-2016, 3D Robotics.
+
 create_attribute.py:
 
-Demonstrates how to create attributes for MAVLink messages within your DroneKit-Python script 
+Demonstrates how to create attributes from MAVLink messages within your DroneKit-Python script 
 and use them in the same way as the built-in Vehicle attributes.
 
 The code adds a new attribute to the Vehicle class, populating it with information from RAW_IMU messages 
@@ -18,14 +23,25 @@ import time
 
 #Set up option parsing to get connection string
 import argparse  
-parser = argparse.ArgumentParser(description='Print out vehicle state information. Connects to SITL on local PC by default.')
-parser.add_argument('--connect', default='127.0.0.1:14550',
-                   help="vehicle connection target. Default '127.0.0.1:14550'")
+parser = argparse.ArgumentParser(description='Demonstrates how to create attributes from MAVLink messages. ')
+parser.add_argument('--connect', 
+                   help="Vehicle connection target string. If not specified, SITL automatically started and used.")
 args = parser.parse_args()
 
-# Connect to our custom vehicle_class MyVehicle
-print 'Connecting to vehicle on: %s' % args.connect
-vehicle = connect(args.connect, wait_ready=True, vehicle_class=MyVehicle)
+connection_string = args.connect
+sitl = None
+
+
+#Start SITL if no connection string specified
+if not connection_string:
+    import dronekit_sitl
+    sitl = dronekit_sitl.start_default()
+    connection_string = sitl.connection_string()
+
+
+# Connect to the Vehicle
+print 'Connecting to vehicle on: %s' % connection_string
+vehicle = connect(connection_string, wait_ready=True, vehicle_class=MyVehicle)
 
 # Add observer for the custom attribute
 
@@ -44,3 +60,7 @@ time.sleep(5)
 #Close vehicle object before exiting script
 print "Close vehicle object"
 vehicle.close()
+
+# Shut down simulator if it was started.
+if sitl is not None:
+    sitl.stop()

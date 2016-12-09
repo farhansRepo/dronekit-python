@@ -1,5 +1,118 @@
 # Changelog
 
+## Version 2.9.0 (2016-08-29)
+
+### Bug Fixes
+* MAVConnection stops threads on exit and close
+* PX4 Pro flight modes are now properly supported
+* go to test now uses correct `global_relative_frame` alt
+
+### Improvements
+* Updated pymavlink dependency to v2 from v1 hoping we don't fall behind
+  again.
+
+## Version 2.8.0 (2016-07-15)
+
+### Bug Fixes
+* Makes sure we are listening to `HOME_LOCATION` message, befor we
+  would only set home location if received by waypoints.
+
+## Version 2.7.0 (2016-06-21)
+
+### Improvements
+* Adds udpin-multi support
+
+## Version 2.6.0 (2016-06-17)
+
+### Bug Fixes
+* Fixes patched mavutil sendfn
+
+## Version 2.5.0 (2016-05-04)
+
+### Improvements
+* Catch and display message and attribute errors, then continue
+* Improved takeoff example docs
+* Deploy docs on successful merge into master (from CircleCI)
+* Drone delivery example, explain port to connect
+* MicroCGS example now uses SITL
+* Make running examples possible on Vagrant
+
+### Bug Fixes
+* Mav type for rover was incorrect
+* `_is_mode_available` can now handle unrecognized mode codes
+* Fix broken links on companion computer page
+* Fix infinite loop on channel test
+
+
+
+## Version 2.4.0 (2016-02-29)
+
+### Bug Fixes
+
+* Use monotonic clock for all of the internal timeouts and time
+  measurements
+* Docs fixes
+
+
+## Version 2.3.0 (2016-02-26)
+
+### New Features
+
+* PX4 compatibility improvements
+
+### Updated Features
+
+* Documentation fixes
+* PIP repository improvements
+* Mode-setting API improvements
+* ardupilot-solo compatibility fixes
+
+
+
+## Version 2.2.0 (2016-02-19)
+
+### Bug Fixes
+
+* Splits outbound messages into its own thread.
+* Remove of capabilities request on HEARTBEAT listener
+* Check if mode_mapping has items before iteration
+
+
+
+## Version 2.1.0 (2016-02-16)
+
+
+### New Features
+
+
+* Gimbal control attribute
+* Autopilot version attribute
+* Autopilot capabilities attribute
+* Best Practice guide documentation.
+* Performance test example (restructured and docs added)
+
+### Updated Features:
+
+Many documentation fixes:
+
+* Restructured documentation with Develop (Concepts) and Guide (HowTo) sections
+* Docs separated out "Connection Strings" section.
+* Improved test and contribution sections.
+* Updated examples and documentation to use DroneKit-Sitl for simulation ("zero setup examples")
+* Debugging docs updated with additional libraries.
+* Flight Replay example fetches data from TLOG rather than droneshare
+* Drone Delivery example now uses strart location for home address.
+* Disabled web tests (not currently supported/used)
+* Updated copyright range to include changes in 2016
+
+### Bug Fixes
+
+* Numerous minor docs fixes.
+* Harmonise nosetest options across each of the integration platforms
+* Fix incorrect property marker for airspeed attribute
+
+
+
 ## Version 2.0.2 (2015-11-30)
 
 ### Bug Fixes:

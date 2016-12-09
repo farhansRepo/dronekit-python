@@ -73,12 +73,12 @@ running the connect within a ``try-catch`` block as shown:
     # Bad TCP connection
     except socket.error:
         print 'No server exists!'
-    except dronekit.APIException:
-        print 'Timeout!'
  
     # Bad TTY connection
     except exceptions.OSError as e:
         print 'No serial exists!'
+
+    # API Error
     except dronekit.APIException:
         print 'Timeout!'
         
@@ -184,7 +184,7 @@ Exactly what state information you observe, and how you react to it, depends on 
 Sleep the script when not needed
 ================================
 
-Sleeping your script appropriately can reduce the memory overhead.
+Sleeping your script can reduce the CPU overhead.
 
 For example, at low speeds you might only need to check whether you've reached a target every few seconds.
 Using ``time.sleep(2)`` between checks will be more efficient than checking more often.
